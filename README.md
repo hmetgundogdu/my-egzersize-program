@@ -2,13 +2,13 @@
 
 A ready-made, minimalist workout checklist site for desktop and mobile. It includes grayscale exercise images, front/back muscle SVG heatmaps and a weekly working-set radar chart.
 
-**Live example:** https://hmetgundogdu.github.io/my-egzersize-program/
+**Live example:** https://hmetgundogdu.github.io/my-workout-program/
 
 ## Preview
 
-![Workout Plan — desktop screenshot](./assets/screenshot.png)
+![Workout Plan — overlapping first and final page sections](./assets/screenshot.png)
 
-[Open the live demo](https://hmetgundogdu.github.io/my-egzersize-program/) · [Social preview image](./assets/social-preview.png)
+[Open the live demo](https://hmetgundogdu.github.io/my-workout-program/) · [Social preview image](./assets/social-preview.png)
 
 
 The preview screenshots are generated from the actual site by [GitHub Actions](./.github/workflows/preview.yml) whenever the application changes.
