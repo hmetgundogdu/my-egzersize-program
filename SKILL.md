@@ -1,75 +1,84 @@
 ---
-name: minimal-workout-page
-description: Build or customize a clean, responsive single-page workout checklist with exercise thumbnails, per-session muscle anatomy SVG heatmaps, and a weekly workload radar chart. Use for creating a site like this repository or safely modifying its routine and visualizations.
+name: workout-template-installer
+description: Reuse this exact workout site's source files and visual design. Customize only workout-data.js to implement a user's selected routine; never recreate the UI from prose.
 ---
 
-# Minimal Workout Page — Coding Agent Skill
+# Workout Template Installer
 
-## Goal
-Create an elegant, white, mobile-first workout program website with immediately usable exercise checklists, unobtrusive grayscale exercise illustrations, front/back muscle heatmaps, and a weekly muscle-distribution radar chart. The site should be readable on phones and desktop, self-contained, and publishable to GitHub Pages.
+## Absolute rule: REUSE, DO NOT REDESIGN
+This repository IS the template. To give another person the same site, **copy the complete repository** (or fork it), including `index.html`, `workout-data.js`, and `.github/workflows/pages.yml`. Then change the workout data only.
 
-This skill documents the implementation pattern, **not a prescribed workout**. Accept the user's own routine. Do not infer, disclose, or embed medical conditions, names, identity, clinical motivations, or other private details in site content, metadata, source comments, README, commit messages, or analytics.
+Do NOT generate new HTML, new CSS, new muscle anatomy illustrations, new charts, a React application, different fonts, or alternative layouts. **Do not "implement the design" from this text.** The exact implementation is already included in the files. This is how the visual appearance remains as close as possible to the reference site.
 
-## When to use
-- User wants a personal workout display/checklist with the same minimal visual language.
-- User wants to add, remove, or rename exercises or sessions.
-- User wants anatomical muscle emphasis and an aggregated chart.
-- User wants to deploy a static workout site to GitHub Pages.
+## Steps for an agent
+1. Read `index.html`, `workout-data.js`, `README.md`, and `.github/workflows/pages.yml`.
+2. Ask for a routine only when the person has not supplied one. If their routine is present, proceed without extra questions. Keep prescribed movements, frequency, sets and reps intact; don't invent a training program.
+3. Edit **only** `workout-data.js` (and optionally generic README text). Do not touch `index.html` or the SVG paths unless the user explicitly asks for a new feature or a genuine bug fix.
+4. Update `config.sessions`: stable unique `id`, user-facing `title`, `type` of `strength` or `recovery`, and `items` entries. Each strength exercise has `{id, exercise, sets, reps}`; recovery items use `{id, exercise, prescription}`.
+5. Update `config.exercises` for EVERY exercise name referenced in the sessions: the closest verified Free Exercise DB `image` slug, or `null`; and `muscles` coefficients using only recognized muscle keys. The exact spelling of `exercise` must match the catalog object key.
+6. Review the generated site, especially the muscle maps and weekly radar chart. If new muscles fall outside supported keys, don't silently pretend that they are represented. Request an explicit feature expansion or explain the limitation.
+7. Deploy the copied repository to its owner's GitHub Pages site using the already-provided workflow. Never publish to the original repository without authorization.
 
-## Repository layout
-- `index.html`: canonical implementation — HTML, CSS, JS and inline generated SVG, no framework/build.
-- `README.md`: public description and usage.
-- `.github/workflows/pages.yml`: deploy to GitHub Pages when `main` changes.
-- `SKILL.md`: this agent specification.
+## What is already fully implemented
+- Complete minimal white CSS and responsive layout
+- Native click/tap-friendly checkboxes, browser-only localStorage and per-section reset
+- Grayscale thumbnails via **one source**, Free Exercise DB
+- Inline SVG front and back stylized muscle figures, color mapping blue → red
+- SVG radar plot plus text list for estimated weekly muscle distribution
+- GitHub Pages workflow; no package manager, bundler, build step or app dependencies
+- English UI, accessible labels and plain static HTML
 
-Read the current files before editing; preserve any user changes. Use the existing language (English by default) unless explicitly asked to change it.
+All of these are actual code in `index.html`. **Use the code, not a visual approximation.**
 
-## UI specification
-1. A clean white page, centered narrow content column (about 760 px max), generous whitespace, thin light-gray separators, unobtrusive typography.
-2. Program sections rendered **all at once** with section title, exercise count, optional muscle-emphasis panel, exercise list, completion count, and *Clear checks* button. No calendar, date navigation, dashboard cards or accounts unless requested.
-3. Each exercise row: a native accessible checkbox, name, set/rep prescription and optional thumbnail at the right. Keep rows touch-friendly.
-4. Thumbnails should come from a single consistent, permission-compatible source. This repository uses [Free Exercise DB](https://github.com/yuhonas/free-exercise-db): `https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/<EXERCISE_SLUG>/0.jpg`. Respect upstream terms, use a truthful mapping to each exercise (nearest variation only when clearly disclosed), add lazy loading and a graceful missing-image fallback. CSS: `filter: grayscale(1) contrast(.85) brightness(1.05)`, subtle opacity, `object-fit: contain`. Avoid visually dominant images.
-5. Each strength section: small **front and back anatomical figure**. Create vector paths with inline SVG (`createElementNS` or static markup). Map primary worked muscle areas to color based on session-specific relative weighted set volume. Visual palette: neutral inactive, blue low, intermediate desaturated tones, red high. Keep a discrete legend. The figures are *stylized schematic muscle maps*, not exact medical anatomy.
-6. Bottom section: a readable **weekly distribution radar chart**, also self-contained SVG. Include text-value list for accessibility and exact estimated values. No extra charting library.
-7. Active recovery can omit muscular heatmap when intensity modeling is not meaningful.
+## Configuration reference
+`workout-data.js` defines `window.WORKOUT_CONFIG`:
 
-## Data model and exercise accounting
-Current `index.html` defines:
-- `plans = [{id,title,meta,items}]` where each `items` entry is `[exerciseName, prescriptionText]`.
-- `imagePaths = {exerciseName: exerciseDbSlug}`.
-- `muscleWeights = {exerciseName: {groupKey: coefficient}}`.
-- `groups` / `names` for chart labels and matching front/back anatomical locations.
-- `metrics(plan)` computes approximate weekly/session *weighted working sets* from numeric set counts in prescriptions (e.g. `3 × 12–15` → 3). A coefficient of 1 indicates principal work and fractional coefficients represent secondary involvement.
-- `bodySvg(view,values,max)` draws front/back and `radarChart()` aggregates only strength sessions.
+```js
+window.WORKOUT_CONFIG = {
+  title: "My workout plan.",
+  eyebrow: "WEEKLY ROUTINE",
+  subtitle: "3 workouts · Active recovery · A simple routine",
+  sessions: [
+    { id: "day-a", title: "Push Focus", type: "strength", items: [
+      { id: "chest", exercise: "Machine Chest Press", sets: 3, reps: "10–15" }
+    ]},
+    { id: "recovery", title: "Active Recovery", type: "recovery", items: [
+      { id: "walk", exercise: "Walking", prescription: "20–30 min" }
+    ]}
+  ],
+  exercises: {
+    "Machine Chest Press": { image: "Leverage_Chest_Press",
+      muscles: { chest: 1, triceps: 0.35, shoulders: 0.25 } },
+    "Walking": { image: "Walking_Treadmill", muscles: {} }
+  }
+};
+```
 
-The coefficients are **illustrative estimates**, not EMG measurements or medically validated muscular activation. Do not call them precise activation, training effectiveness or biological intensity. Radar compares relative *estimated set emphasis*, not true strength stimulus. Do not count the same secondary muscle as another full primary set unless intended. When editing an exercise, update `plans`, `imagePaths` and `muscleWeights` together. Add SVG-region support for any new muscle group and check both front and back renderings.
+Recognized muscle keys, all already drawn on the SVGs:
+`chest`, `back`, `shoulders`, `biceps`, `triceps`, `quads`, `hamstrings`, `calves`, `lowerBack`, `glutes`.
 
-Avoid breaking calculations when prescriptions contain ranges, durations or unusual formats: parse strength sets explicitly or use structured `sets` in a refactor. Do not count rest-day walking/minutes as weight-training sets. If the user changes the number of sections, do not assume `plans.slice(0,3)`; filter by section type or another reliable flag.
+The radar sums (strength-session sets × estimated coefficient) for each key. An exercise's `sets` MUST be a number, not "3 × 12". The `reps` field is display text. A non-strength `prescription` is never treated as weighted sets. Estimates are not direct muscle activation measurements.
 
-## Checkboxes & persistence
-- Preserve `localStorage` key `simple-workout-checks-v1` for backward compatibility.
-- Checkbox records are indexed by stable section ID and exercise index. If rearranging existing items, **migrate to exercise-ID-based keys** to avoid misattributing old checkmarks, or deliberately migrate existing records.
-- Handle unavailable/blocked localStorage gracefully.
-- Clear checks must reset **only the selected section**.
-- Do not transmit progress to a server. There is no authentication or cross-device sync.
-- Maintain keyboard focus, semantic labels, contrast and screen-reader-readable chart descriptions.
+Image URLs are derived from
+`https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/SLUG/0.jpg`.
+Check the real slug in the [source directory](https://github.com/yuhonas/free-exercise-db/tree/main/exercises). Do not make up a slug. If there is no appropriate image, use `image: null`; don't attach an unrelated image. Source images are styled with the template's original grayscale CSS.
 
-## Implementation workflow
-1. Read `index.html`, `README.md` and workflow before writing. Check existing GitHub Pages status.
-2. Update the exercise data first, then illustration mapping and chart muscle weights; avoid modifying the visual system unnecessarily.
-3. Render/exercise-test: small mobile viewport (~360 px), desktop (~1280 px), check no overflow; test image failures, all checkboxes, persistence across reload, section reset, SVG front/back and radar totals. Compare expected counts to displayed values and verify no JavaScript syntax errors.
-4. Search source and public copy for private identifiers or medical explanations; keep all visible interface labels in English unless requested otherwise.
-5. Commit changes to `main` after validation. The Pages workflow publishes automatically if enabled. Confirm successful deployment status instead of promising the site is live before confirmation.
+## Checklist storage
+The deployed site uses browser-local key `simple-workout-checks-v1` and section IDs + exercise indices. For a **new person / new repository**, independent localStorage means they have separate progress. For edits to an already-used routine, reordering exercises can misattribute checkmarks; reset or explicitly migrate existing data if changing order.
 
-## Acceptance criteria
-- A visitor sees only a simple, complete workout plan.
-- Each exercise is legible and easy to check, without losing previous checkmarks.
-- Single-source grayscale images are accurate and do not dominate the page.
-- The right session's SVG figures highlight relevant muscles; diagrams and radar update with changes in the plan.
-- Overall radar has an accompanying numerical, accessible summary.
-- Mobile and desktop layouts are clean; no framework, build or extra account required.
-- No personal, sensitive, or diagnostic information is exposed.
-- GitHub Pages deploys successfully.
+## Privacy and content
+Use generic site title and descriptions; never insert a real person's identifying information, health status, medical history, personal notes, or training motivation unless explicitly requested. Do not track users or send checkbox data to a server. Separate **exercise content** from any personal context motivating the plan.
 
-## Example coding-agent request
-"Using SKILL.md, customize index.html for the following training sessions and exercises. Preserve the minimal white layout, exercise checkboxes, grayscale images from one source, front/back SVG muscle diagrams and the bottom weekly workload radar. Keep data local, the interface in English, and publish through the existing GitHub Pages workflow. Validate the layout and numerical summary before deploying."
+## Validation requirements
+- Open both mobile (~360px) and desktop (~1280px) sizes, verify no horizontal overflow.
+- Confirm each prescribed item renders with correct sets/reps and appropriate image.
+- Confirm three things separately: per-section SVG muscle shading, radar totals, and checkboxes/reset/persistence.
+- Confirm all strength sessions (not a fixed first-three assumption) are included in radar. Recovery sessions are excluded.
+- Confirm all UI labels remain English and the reference layout/CSS was not regenerated.
+- Verify the GitHub Actions workflow is successful before reporting the new site as live.
+
+## If the user asks for a different design
+Only then should you modify template source code. Back up the original first. For a site that looks **the same**, leave `index.html` untouched.
+
+## User-facing agent prompt
+"Use this repository as an exact ready-made template. Read SKILL.md. Do NOT redesign anything; modify only workout-data.js for my routine below, keeping the existing anatomy SVGs, grayscale thumbnails, chart, styling, and checklist behavior. Then validate and deploy my own copy of the site."
