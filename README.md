@@ -1,14 +1,18 @@
-# Egzersiz Programı
+# Workout Plan
 
-Mobil ve masaüstünde çalışan, sade bir egzersiz programı sayfası.
+A minimal, responsive workout checklist for mobile and desktop.
 
-- Antrenman A, B, C ve aktif toparlanma hareketleri
-- Her hareketin yanında işaretleme kutusu
-- Bölüm bazında sıfırlama
-- Sadece tarayıcıda saklanan işaretlemeler
-- Beyaz, responsive tasarım
-- Tek `index.html` dosyası, bağımlılık yok
+## Features
 
-**Uygulama:** https://hmetgundogdu.github.io/my-egzersize-program/
+- Workout A, B, C, and active recovery
+- Checkboxes for each exercise
+- Reset checkmarks independently for each section
+- Local browser storage for progress
+- Clean white design
+- Single HTML file with no external dependencies
 
-GitHub Pages yayını `main` dalına yapılan gönderimlerle otomatik tetiklenir. Pages kaynağı olarak **GitHub Actions** seçilmelidir.
+**Live site:** https://hmetgundogdu.github.io/my-egzersize-program/
+
+## Deployment
+
+Changes pushed to `main` trigger the GitHub Pages workflow automatically. Set the Pages deployment source to **GitHub Actions** under repository settings.
