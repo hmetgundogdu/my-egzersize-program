@@ -4,6 +4,13 @@ A ready-made, minimalist workout checklist site for desktop and mobile. It inclu
 
 **Live example:** https://hmetgundogdu.github.io/my-egzersize-program/
 
+## Preview
+
+![Workout Plan — desktop screenshot](./assets/screenshot.png)
+
+[Open the live demo](https://hmetgundogdu.github.io/my-egzersize-program/) · [Social preview image](./assets/social-preview.png)
+
+
 ## Create your own workout site
 
 **Do not ask an agent to recreate the site from scratch.** Fork or copy this repository. All UI styling, anatomy figures, checklist logic and charts are already implemented.
