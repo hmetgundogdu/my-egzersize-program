@@ -6,11 +6,21 @@
 <style>
 :root{color-scheme:light;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#202124;background:#fff}*{box-sizing:border-box}body{margin:0}.wrap{max-width:760px;margin:0 auto;padding:52px 24px 90px}.head{margin-bottom:40px}.eyebrow{font-size:11px;color:#92969b;letter-spacing:.15em;font-weight:700;text-transform:uppercase}h1{font-size:clamp(32px,6vw,45px);letter-spacing:-.06em;font-weight:710;margin:13px 0 9px}p{margin:0;color:#868a91;font-size:14px;line-height:1.65}.section{border-top:1px solid #e9eaeb;padding:24px 0 27px}.sectionhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}h2{font-size:20px;letter-spacing:-.035em;font-weight:650;margin:0}.sectionmeta{color:#9a9da3;font-size:12px}.task{display:flex;align-items:center;gap:14px;min-height:53px;cursor:pointer}.task input{appearance:none;width:22px;height:22px;flex:none;border-radius:7px;border:1.5px solid #d5d8dc;background:white;position:relative;cursor:pointer}.task input:checked{background:#24272b;border-color:#24272b}.task input:checked::after{content:"";position:absolute;left:6px;top:3px;width:6px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}.task input:focus-visible,.reset:focus-visible{outline:2px solid #444;outline-offset:3px}.name{flex:1;min-width:0;font-size:14px;font-weight:500}.exercise-image{width:62px;height:62px;flex:none;object-fit:contain;filter:grayscale(1) contrast(.85) brightness(1.05);mix-blend-mode:multiply;opacity:.78;border-radius:7px}.exercise-image-fallback{background:#f6f6f6;opacity:.3}.task{min-height:70px}.reps{font-size:12px;color:#92969c;white-space:nowrap;font-variant-numeric:tabular-nums}.task:has(input:checked) .name{color:#a0a3a8;text-decoration:line-through;text-decoration-color:#c5c8ca}.reset{background:none;border:0;padding:9px 0;font-size:12px;text-decoration:underline;text-underline-offset:3px;color:#92969b;cursor:pointer}.bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:11px}.counter{font-size:12px;color:#989ba0}.hint{font-size:12px;color:#a0a3a7;margin-top:6px}footer{border-top:1px solid #e9eaeb;padding-top:20px;color:#a0a3a7;font-size:11px;line-height:1.7}.pill{font-size:11px;color:#777c83;background:#f4f5f6;border-radius:30px;padding:5px 9px}
 @media(max-width:520px){.wrap{padding:36px 19px 65px}.section{padding:23px 0}.task{gap:11px}.name{font-size:13px}.reps{font-size:11px}.sectionmeta{font-size:11px}.exercise-image{width:53px;height:53px}.task{gap:9px}}
+
+/* Muscle maps and training distribution */
+.muscle-panel{display:flex;gap:18px;align-items:center;justify-content:space-between;padding:15px 0 5px}
+.muscle-copy{flex:1;min-width:0}.muscle-copy .micro{font-size:11px;color:#92969c;line-height:1.65}.muscle-views{display:flex;gap:7px;flex:none}
+.body-map{width:79px;height:150px;display:block}.body-map .base{fill:#f2f3f4;stroke:#d2d6db;stroke-width:1.05;stroke-linejoin:round}.body-map .muscle{stroke:#fff;stroke-width:.9;stroke-linecap:round;stroke-linejoin:round}
+.legend{display:flex;gap:6px;align-items:center;margin-top:13px;color:#90949a;font-size:10px}.gradient{width:76px;height:5px;border-radius:10px;background:linear-gradient(90deg,#438bd8,#d4a2ac,#e24949)}
+.overview{border-top:1px solid #e9eaeb;padding:28px 0 34px}.overview h2{font-size:23px}.overview .desc{margin:8px 0 18px}
+.chart-layout{display:flex;gap:18px;align-items:center}.radar{width:min(100%,340px);height:auto;flex:none}.radar .gridline{fill:none;stroke:#e7e9ed;stroke-width:1}.radar .axis{stroke:#ebecef;stroke-width:1}.radar .area{fill:rgba(91,113,180,.12);stroke:#6b79b3;stroke-width:2}.radar text{font-size:10px;fill:#737982;font-family:inherit}
+.distribution-list{flex:1;min-width:0}.dist-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #f0f1f2;font-size:12px}.dist-item span{color:#838890}.dist-item strong{font-weight:650;font-variant-numeric:tabular-nums}
+@media(max-width:520px){.muscle-panel{gap:8px}.muscle-views{gap:1px}.body-map{width:62px;height:124px}.chart-layout{flex-direction:column;align-items:stretch}.radar{margin:auto;max-width:330px}.distribution-list{width:100%}}
 </style>
 </head>
 <body><main class="wrap">
 <header class="head"><div class="eyebrow">WEEKLY ROUTINE</div><h1>My workout plan.</h1><p>3 workouts · Active recovery · A simple routine</p></header>
-<div id="program"></div>
+<div id="program"></div><section class="overview" id="overview" aria-label="Weekly muscle distribution"><div class="eyebrow">TRAINING DISTRIBUTION</div><h2>Weekly muscle balance</h2><p class="desc">Estimated working-set emphasis across the three strength sessions.</p><div class="chart-layout"><div id="radar"></div><div id="distribution" class="distribution-list"></div></div><p class="hint">Approximate primary-muscle set allocation, not measured activation or training effectiveness. Overlapping muscle involvement is simplified.</p></section>
 <footer>Your checkmarks are saved only in this browser. You can reset each section at any time.</footer>
 </main>
 <script>
@@ -25,12 +35,86 @@ const plans=[
 const imagePaths={"Calf Raise":"Seated_Calf_Raise","Machine Chest Press":"Leverage_Chest_Press","Chest-Supported Row":"Leverage_Iso_Row","Leg Extension":"Leg_Extensions","Seated Leg Curl":"Seated_Leg_Curl","Machine Lateral Raise":"Seated_Side_Lateral_Raise","Neutral-Grip Lat Pulldown":"V-Bar_Pulldown","Incline Machine Chest Press":"Leverage_Incline_Chest_Press","Cable Biceps Curl":"High_Cable_Curls","Cable Triceps Pushdown":"Triceps_Pushdown","Walking":"Walking_Treadmill","Ankle Pumps":"Ankle_Circles","Gentle Calf Stretch":"Seated_Calf_Stretch","45° Back Extension":"Hyperextensions_Back_Extensions"};
 const imageBase='https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/';
 const key='simple-workout-checks-v1';let state={};try{state=JSON.parse(localStorage.getItem(key)||'{}')||{}}catch{}const save=()=>{try{localStorage.setItem(key,JSON.stringify(state))}catch{}};
+
+const muscleWeights={
+'Calf Raise':{calves:1},'Machine Chest Press':{chest:1,triceps:.35,shoulders:.25},
+'Incline Machine Chest Press':{chest:1,shoulders:.4,triceps:.3},
+'Chest-Supported Row':{back:1,biceps:.35,shoulders:.15},
+'Neutral-Grip Lat Pulldown':{back:1,biceps:.4},
+'Leg Extension':{quads:1},'Seated Leg Curl':{hamstrings:1},
+'Machine Lateral Raise':{shoulders:1},
+'Cable Biceps Curl':{biceps:1},'Cable Triceps Pushdown':{triceps:1},
+'45° Back Extension':{lowerBack:1,glutes:.7,hamstrings:.3}
+};
+const names={chest:'Chest',back:'Upper back',shoulders:'Shoulders',biceps:'Biceps',triceps:'Triceps',quads:'Quadriceps',hamstrings:'Hamstrings',calves:'Calves',lowerBack:'Lower back',glutes:'Glutes'};
+const groups=Object.keys(names);
+const color=value=>value<=0?'#eef0f2':value<.24?'#5297d8':value<.5?'#8b9acc':value<.75?'#bc7eaa':'#e45454';
+const ns='http://www.w3.org/2000/svg';
+function node(tag,attrs={},parent){const n=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,v);if(parent)parent.append(n);return n}
+function shape(svg,d,key,values,max){const weight=values[key]||0;const p=node('path',{d,class:'muscle',fill:color(max?weight/max:0)},svg);const t=node('title',{},p);t.textContent=names[key]+': '+weight.toFixed(1)+' weighted sets'}
+function bodySvg(view,values,max){
+ const svg=node('svg',{viewBox:'0 0 100 185',class:'body-map',role:'img','aria-label':view+' body muscle emphasis'});
+ node('title',{},svg).textContent=view+' muscle map';
+ node('circle',{cx:50,cy:14,r:12,class:'base'},svg);
+ node('path',{d:'M40 25 L27 30 18 43 12 79 17 83 27 55 29 88 34 106 33 146 35 177 47 177 50 111 53 177 65 177 67 146 66 106 71 88 73 55 83 83 88 79 82 43 73 30 60 25 57 32 43 32Z',class:'base'},svg);
+ if(view==='Front'){
+ shape(svg,'M39 34 L50 37 50 58 35 57 31 44Z','chest',values,max);shape(svg,'M61 34 L50 37 50 58 65 57 69 44Z','chest',values,max);
+ shape(svg,'M32 30 Q23 30 20 45 L28 53 35 37Z','shoulders',values,max);shape(svg,'M68 30 Q77 30 80 45 L72 53 65 37Z','shoulders',values,max);
+ shape(svg,'M22 48 17 74 23 76 30 50Z','biceps',values,max);shape(svg,'M78 48 83 74 77 76 70 50Z','biceps',values,max);
+ shape(svg,'M33 108 49 108 47 143 37 145Z','quads',values,max);shape(svg,'M51 108 67 108 63 145 53 143Z','quads',values,max);
+ shape(svg,'M36 151 46 151 44 174 36 174Z','calves',values,max);shape(svg,'M54 151 64 151 64 174 56 174Z','calves',values,max);
+ }else{
+ shape(svg,'M35 32 49 40 49 64 29 75 28 46Z','back',values,max);shape(svg,'M65 32 51 40 51 64 71 75 72 46Z','back',values,max);
+ shape(svg,'M33 29 22 33 20 46 29 52 38 36Z','shoulders',values,max);shape(svg,'M67 29 78 33 80 46 71 52 62 36Z','shoulders',values,max);
+ shape(svg,'M24 50 17 75 23 78 30 53Z','triceps',values,max);shape(svg,'M76 50 83 75 77 78 70 53Z','triceps',values,max);
+ shape(svg,'M40 76 50 78 50 105 33 103Z','lowerBack',values,max);shape(svg,'M60 76 50 78 50 105 67 103Z','lowerBack',values,max);
+ shape(svg,'M34 105 49 108 48 125 34 123Z','glutes',values,max);shape(svg,'M66 105 51 108 52 125 66 123Z','glutes',values,max);
+ shape(svg,'M35 127 47 129 46 147 36 146Z','hamstrings',values,max);shape(svg,'M65 127 53 129 54 147 64 146Z','hamstrings',values,max);
+ shape(svg,'M36 152 46 152 44 174 36 174Z','calves',values,max);shape(svg,'M54 152 64 152 64 174 56 174Z','calves',values,max);
+ }
+ return svg;
+}
+function metrics(plan){
+ const v=Object.fromEntries(groups.map(k=>[k,0]));
+ if(plan.id==='rest')return v;
+ for(const [name,reps] of plan.items){
+  const sets=Number.parseFloat(reps)||0;for(const [k,w] of Object.entries(muscleWeights[name]||{}))v[k]+=sets*w;
+ }
+ return v;
+}
+function musclePanel(plan){
+ if(plan.id==='rest')return;
+ const values=metrics(plan),max=Math.max(...Object.values(values),1);
+ const panel=document.createElement('div');panel.className='muscle-panel';
+ const copy=document.createElement('div');copy.className='muscle-copy';
+ const caption=document.createElement('div');caption.className='eyebrow';caption.textContent='MUSCLE EMPHASIS';
+ const info=document.createElement('p');info.className='micro';info.textContent='Illustrative muscle focus based on the exercises in this session.';
+ const legend=document.createElement('div');legend.className='legend';legend.innerHTML='<span>Low</span><span class="gradient" aria-hidden="true"></span><span>High</span>';
+ copy.append(caption,info,legend);
+ const views=document.createElement('div');views.className='muscle-views';views.append(bodySvg('Front',values,max),bodySvg('Back',values,max));
+ panel.append(copy,views);return panel;
+}
+function radarChart(){
+ const totals=Object.fromEntries(groups.map(k=>[k,0]));
+ for(const plan of plans.slice(0,3)){const v=metrics(plan);for(const k of groups)totals[k]+=v[k]}
+ const width=350,center=175,radius=118,max=Math.max(...Object.values(totals),1);
+ const svg=node('svg',{viewBox:'0 0 350 350',class:'radar',role:'img','aria-label':'Weekly training distribution radar chart'});
+ const pt=(i,value)=>{const a=-Math.PI/2+2*Math.PI*i/groups.length;return [center+radius*value*Math.cos(a),center+radius*value*Math.sin(a)]};
+ const points=arr=>arr.map(([x,y])=>x.toFixed(1)+','+y.toFixed(1)).join(' ');
+ for(const level of [.25,.5,.75,1])node('polygon',{points:points(groups.map((_,i)=>pt(i,level))),class:'gridline'},svg);
+ groups.forEach((k,i)=>{const [x,y]=pt(i,1);node('line',{x1:center,y1:center,x2:x,y2:y,class:'axis'},svg);const [lx,ly]=pt(i,1.19);const t=node('text',{x:lx,y:ly,'text-anchor':'middle','dominant-baseline':'middle'},svg);t.textContent=names[k]});
+ node('polygon',{points:points(groups.map((k,i)=>pt(i,totals[k]/max))),class:'area'},svg);
+ const wrap=document.getElementById('radar');wrap.append(svg);const list=document.getElementById('distribution');
+ for(const k of [...groups].sort((a,b)=>totals[b]-totals[a])){const row=document.createElement('div');row.className='dist-item';const label=document.createElement('span');label.textContent=names[k];const value=document.createElement('strong');value.textContent=Number(totals[k].toFixed(1))+' sets';row.append(label,value);list.append(row)}
+}
+
 const root=document.getElementById('program');
 for(const plan of plans){
-const section=document.createElement('section');section.className='section';const heading=document.createElement('div');heading.className='sectionhead';const title=document.createElement('h2');title.textContent=plan.title;const meta=document.createElement('span');meta.className='sectionmeta';meta.textContent=plan.meta;heading.append(title,meta);section.append(heading);
+const section=document.createElement('section');section.className='section';const heading=document.createElement('div');heading.className='sectionhead';const title=document.createElement('h2');title.textContent=plan.title;const meta=document.createElement('span');meta.className='sectionmeta';meta.textContent=plan.meta;heading.append(title,meta);section.append(heading);const map=musclePanel(plan);if(map)section.append(map);
 let inputs=[];const count=document.createElement('span');count.className='counter';const update=()=>{const done=inputs.filter(x=>x.checked).length;count.textContent=done+' / '+inputs.length+' completed'};
 plan.items.forEach(([name,reps],i)=>{const label=document.createElement('label');label.className='task';const input=document.createElement('input');input.type='checkbox';input.checked=!!state[plan.id]?.[i];input.setAttribute('aria-label',name);inputs.push(input);input.addEventListener('change',()=>{state[plan.id]??={};state[plan.id][i]=input.checked;save();update()});const n=document.createElement('span');n.className='name';n.textContent=name;const r=document.createElement('span');r.className='reps';r.textContent=reps;label.append(input,n,r);if(imagePaths[name]){const img=document.createElement('img');img.className='exercise-image';img.src=imageBase+imagePaths[name]+'/0.jpg';img.alt='';img.loading='lazy';img.decoding='async';img.width=62;img.height=62;img.addEventListener('error',()=>{img.style.display='none'});label.append(img)}section.append(label)});
 const bottom=document.createElement('div');bottom.className='bottom';const reset=document.createElement('button');reset.className='reset';reset.type='button';reset.textContent='Clear checks';reset.addEventListener('click',()=>{delete state[plan.id];inputs.forEach(x=>x.checked=false);save();update()});bottom.append(count,reset);section.append(bottom);root.append(section);update();
 }
+radarChart();
 })();
 </script></body></html>
