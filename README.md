@@ -1,28 +1,38 @@
-# Workout Plan
+# Workout Plan Template
 
-A minimal, responsive workout checklist for mobile and desktop.
+A ready-made, minimalist workout checklist site for desktop and mobile. It includes grayscale exercise images, front/back muscle SVG heatmaps and a weekly working-set radar chart.
 
-## Features
+**Live example:** https://hmetgundogdu.github.io/my-egzersize-program/
 
-- Workout A, B, C, and active recovery
-- Checkboxes for each exercise
-- Reset checkmarks independently for each section
-- Local browser storage for progress
-- Clean white design
-- Single HTML file with no external dependencies
+## Create your own workout site
 
-**Live site:** https://hmetgundogdu.github.io/my-egzersize-program/
+**Do not ask an agent to recreate the site from scratch.** Fork or copy this repository. All UI styling, anatomy figures, checklist logic and charts are already implemented.
 
-## Deployment
+1. Copy or fork the full repository.
+2. Tell your coding agent to read [SKILL.md](./SKILL.md).
+3. Supply your preferred exercises, sets, reps and session names.
+4. Have the agent edit **only [workout-data.js](./workout-data.js)**.
+5. Set **Settings → Pages → Source: GitHub Actions** in your copy. The existing workflow deploys automatically when you push to `main`.
 
-Changes pushed to `main` trigger the GitHub Pages workflow automatically. Set the Pages deployment source to **GitHub Actions** under repository settings.
+**Example prompt:**
 
-## Exercise illustrations
+> Use this repository's SKILL.md and existing code as an exact template. Do not redesign the site. Customize only workout-data.js using my routine, including matched exercise illustrations and muscle coefficients. Validate the chart and publish my own copy on GitHub Pages.
 
-Exercise thumbnails are loaded from [Free Exercise DB](https://github.com/yuhonas/free-exercise-db), an open public-domain exercise dataset. Images are displayed in grayscale and may show a comparable variation for some machine exercises. Images are illustrative; exercise names and prescribed repetitions remain the source of truth.
+## Repository files
 
-## For coding agents — `SKILL.md`
+| File | Purpose |
+| --- | --- |
+| [index.html](./index.html) | **Fixed renderer:** minimalist styling, checkbox logic, SVG body maps, radar, thumbnail layout |
+| [workout-data.js](./workout-data.js) | **Editable routine:** sections, exercises, repetitions, image lookup and weighted-muscle estimates |
+| [SKILL.md](./SKILL.md) | Instructions for other coding agents to reuse the exact existing implementation |
+| [.github/workflows/pages.yml](./.github/workflows/pages.yml) | GitHub Pages deployment |
 
-The repository includes a reusable [coding-agent skill](./SKILL.md) documenting how to build or adapt this style of workout page: minimalist responsive HTML, local checkboxes, grayscale exercise images, front/back SVG muscle maps, and the weekly radar distribution chart. It includes the data model, implementation rules, accessibility, privacy precautions, testing checklist, and deployment steps.
+The application needs no framework or build step. Open `index.html` locally or publish through GitHub Pages. Unlike a separate fetched JSON file, the bundled `workout-data.js` is also compatible with ordinary file browsing.
 
-To use it in another project, give your coding agent the `SKILL.md` file and your own exercise routine. Ask it to follow the skill while generating or customizing `index.html`. Review exercise prescriptions and estimated muscle-set weights before publishing; visualization values are estimates rather than measured muscle activation.
+Checkbox completion is saved to the current browser's `localStorage`. There is no account, online synchronization or telemetry. If you change the order of exercises on an existing live site, stored index-based checkmarks may need to be cleared or migrated.
+
+Images use the [Free Exercise DB](https://github.com/yuhonas/free-exercise-db) collection and a common grayscale CSS treatment. Some equipment variants are approximations; verify the correct matching exercise. Muscle heatmaps and the radar describe *estimated set emphasis*, not measured muscle activation or guaranteed results.
+
+## Consistency
+
+The supplied renderer preserves the reference page's exact HTML/CSS/JS instead of leaving design choices to an agent. Rendering can still differ slightly by browser, screen size, or image availability. For major source-code changes, test visually at mobile and desktop widths.
