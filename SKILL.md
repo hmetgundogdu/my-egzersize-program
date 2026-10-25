@@ -6,7 +6,7 @@ description: Install, customize, and safely update the exact workout template fr
 # Workout Template Installer
 
 ## Absolute rule: REUSE, DO NOT REDESIGN
-This repository IS the template. To give another person the same site, **copy the complete repository** (or fork it), including `index.html`, `template-version.js`, `workout-data.js`, and `.github/workflows/pages.yml`. Then change the workout data only.
+This repository IS the template. To give another person the same site, **copy the complete repository** (or fork it), including `index.html`, `template-version.js`, `workout-data.js`, `manifest.webmanifest`, `sw.js`, `assets/app-icon.svg`, and `.github/workflows/pages.yml`. Then change the workout data only.
 
 Do NOT generate new HTML, new CSS, new muscle anatomy illustrations, new charts, a React application, different fonts, or alternative layouts. **Do not "implement the design" from this text.** The exact implementation is already included in the files. This is how the visual appearance remains as close as possible to the reference site.
 
@@ -22,7 +22,7 @@ Do NOT generate new HTML, new CSS, new muscle anatomy illustrations, new charts,
 ## Template version and opt-in upstream updates
 
 **Official upstream source:** https://github.com/hmetgundogdu/my-workout-program  
-**Version source of truth:** `template-version.js`, which defines `window.WORKOUT_TEMPLATE_VERSION` as a semantic version string. The current initial versioned release is **v1.1.0**. Its label is shown beside WEEKLY ROUTINE. A user's exercise customization never increases the template version.
+**Version source of truth:** `template-version.js`, which defines `window.WORKOUT_TEMPLATE_VERSION` as a semantic version string. The current initial versioned release is **v1.2.0**. Its label is shown beside WEEKLY ROUTINE. A user's exercise customization never increases the template version.
 
 ### On installing the template
 - Clone/fork the complete repository and retain `template-version.js`.
@@ -44,6 +44,7 @@ Do NOT generate new HTML, new CSS, new muscle anatomy illustrations, new charts,
 "Check the official my-workout-program template for a newer version. Show me the differences and ask for my approval before applying anything. If I approve, update only the template implementation, preserve my workout-data.js and site settings, verify, then deploy my copy."
 
 ## What is already fully implemented
+- Installable PWA with manifest, app icons, service worker and standalone home-screen experience
 - Version label next to the header, read from `template-version.js`
 - Complete minimal white CSS and responsive layout
 - Native click/tap-friendly checkboxes, browser-only localStorage and per-section reset
@@ -54,6 +55,17 @@ Do NOT generate new HTML, new CSS, new muscle anatomy illustrations, new charts,
 - English UI, accessible labels and plain static HTML
 
 All of these are actual code in `index.html`. **Use the code, not a visual approximation.**
+
+## PWA preservation and update rules
+
+- Copy `manifest.webmanifest`, `sw.js`, `assets/app-icon.svg`, the generated PNG app icons, and `.github/workflows/pwa-icons.yml` along with the normal template files.
+- Manifest `start_url`, `scope`, and service worker registration are **relative**, so forks deployed under their own GitHub Pages subpaths remain in scope.
+- A new installation is offered automatically only where the browser supports the `beforeinstallprompt` event. On iOS, users can select Safari's Share → Add to Home Screen.
+- The service worker caches the same-origin shell and workout configuration. Third-party exercise thumbnails are deliberately network-only; never promise offline pictures or data sync.
+- When accepting future official template releases that change PWA assets or caching behavior, update the cache namespace in `sw.js` and make sure the previous cache is deleted in the activate handler.
+- Generated icons need a successfully completed `pwa-icons.yml` run, and installability must be tested after the PNG files are deployed. Do not promise installability before checking the manifest/icon URLs.
+- Keep the user's private `workout-data.js` intact during upstream version upgrades. Do not turn the service worker into an automatic *source-code* updater; agent-managed fork upgrades still require explicit user permission.
+- Validate normal install on Chromium, Add to Home Screen on iOS where possible, offline reload, checkbox persistence, and network recovery.
 
 ## Configuration reference
 `workout-data.js` defines `window.WORKOUT_CONFIG`:
