@@ -23,29 +23,20 @@
 <div id="program"></div><section class="overview" id="overview" aria-label="Weekly muscle distribution"><div class="eyebrow">TRAINING DISTRIBUTION</div><h2>Weekly muscle balance</h2><p class="desc">Estimated working-set emphasis across the three strength sessions.</p><div class="chart-layout"><div id="radar"></div><div id="distribution" class="distribution-list"></div></div><p class="hint">Approximate primary-muscle set allocation, not measured activation or training effectiveness. Overlapping muscle involvement is simplified.</p></section>
 <footer>Your checkmarks are saved only in this browser. You can reset each section at any time.</footer>
 </main>
+<script src="workout-data.js"></script>
 <script>
 (()=>{
-const calf=['Calf Raise','3 × 15–25'],quad=['Leg Extension','3 × 12–15'],ham=['Seated Leg Curl','3 × 12–15'];
-const plans=[
-{id:'a',title:'Full Body · Shoulder Focus',meta:'6 exercises',items:[calf,['Machine Chest Press','3 × 10–15'],['Chest-Supported Row','3 × 10–15'],quad,ham,['Machine Lateral Raise','3 × 12–20']]},
-{id:'b',title:'Full Body · Pull Focus',meta:'7 exercises',items:[calf,['Neutral-Grip Lat Pulldown','3 × 10–15'],['Incline Machine Chest Press','3 × 10–15'],quad,ham,['Cable Biceps Curl','3 × 12–15'],['45° Back Extension','2 × 12–15']]},
-{id:'c',title:'Full Body · Push Focus',meta:'6 exercises',items:[calf,['Machine Chest Press','3 × 10–15'],['Chest-Supported Row','3 × 10–15'],quad,ham,['Cable Triceps Pushdown','3 × 12–15']]},
-{id:'rest',title:'Active Recovery',meta:'Non-training days',items:[['Walking','20–30 min'],['Ankle Pumps','2 × 20'],['Gentle Calf Stretch','2 × 20 sec'],['Relax and Recover','10–15 min']]}
-];
-const imagePaths={"Calf Raise":"Seated_Calf_Raise","Machine Chest Press":"Leverage_Chest_Press","Chest-Supported Row":"Leverage_Iso_Row","Leg Extension":"Leg_Extensions","Seated Leg Curl":"Seated_Leg_Curl","Machine Lateral Raise":"Seated_Side_Lateral_Raise","Neutral-Grip Lat Pulldown":"V-Bar_Pulldown","Incline Machine Chest Press":"Leverage_Incline_Chest_Press","Cable Biceps Curl":"High_Cable_Curls","Cable Triceps Pushdown":"Triceps_Pushdown","Walking":"Walking_Treadmill","Ankle Pumps":"Ankle_Circles","Gentle Calf Stretch":"Seated_Calf_Stretch","45° Back Extension":"Hyperextensions_Back_Extensions"};
+const config=window.WORKOUT_CONFIG;
+if(!config||!Array.isArray(config.sessions))throw Error('Missing workout-data.js');
+const plans=config.sessions.map(session=>({...session,meta:session.type==='strength'?session.items.length+' exercises':(session.subtitle||''),items:session.items.map(item=>[item.exercise,item.prescription||(item.sets+' × '+item.reps)])}));
+const imagePaths=Object.fromEntries(Object.entries(config.exercises).map(([name,entry])=>[name,entry.image]).filter(([,image])=>!!image));
 const imageBase='https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/';
+document.querySelector('.head .eyebrow').textContent=config.eyebrow||'WEEKLY ROUTINE';
+document.querySelector('.head h1').textContent=config.title||'Workout Plan';
+document.querySelector('.head p').textContent=config.subtitle||'';
 const key='simple-workout-checks-v1';let state={};try{state=JSON.parse(localStorage.getItem(key)||'{}')||{}}catch{}const save=()=>{try{localStorage.setItem(key,JSON.stringify(state))}catch{}};
 
-const muscleWeights={
-'Calf Raise':{calves:1},'Machine Chest Press':{chest:1,triceps:.35,shoulders:.25},
-'Incline Machine Chest Press':{chest:1,shoulders:.4,triceps:.3},
-'Chest-Supported Row':{back:1,biceps:.35,shoulders:.15},
-'Neutral-Grip Lat Pulldown':{back:1,biceps:.4},
-'Leg Extension':{quads:1},'Seated Leg Curl':{hamstrings:1},
-'Machine Lateral Raise':{shoulders:1},
-'Cable Biceps Curl':{biceps:1},'Cable Triceps Pushdown':{triceps:1},
-'45° Back Extension':{lowerBack:1,glutes:.7,hamstrings:.3}
-};
+const muscleWeights=Object.fromEntries(Object.entries(config.exercises).map(([name,entry])=>[name,entry.muscles||{}]));
 const names={chest:'Chest',back:'Upper back',shoulders:'Shoulders',biceps:'Biceps',triceps:'Triceps',quads:'Quadriceps',hamstrings:'Hamstrings',calves:'Calves',lowerBack:'Lower back',glutes:'Glutes'};
 const groups=Object.keys(names);
 const color=value=>value<=0?'#eef0f2':value<.24?'#5297d8':value<.5?'#8b9acc':value<.75?'#bc7eaa':'#e45454';
@@ -76,14 +67,14 @@ function bodySvg(view,values,max){
 }
 function metrics(plan){
  const v=Object.fromEntries(groups.map(k=>[k,0]));
- if(plan.id==='rest')return v;
- for(const [name,reps] of plan.items){
-  const sets=Number.parseFloat(reps)||0;for(const [k,w] of Object.entries(muscleWeights[name]||{}))v[k]+=sets*w;
+ if(plan.type!=='strength')return v;
+ for(const item of plan.items){
+  const name=item.exercise;const sets=Number(item.sets)||0;for(const [k,w] of Object.entries(muscleWeights[name]||{}))v[k]+=sets*w;
  }
  return v;
 }
 function musclePanel(plan){
- if(plan.id==='rest')return;
+ if(plan.type!=='strength')return;
  const values=metrics(plan),max=Math.max(...Object.values(values),1);
  const panel=document.createElement('div');panel.className='muscle-panel';
  const copy=document.createElement('div');copy.className='muscle-copy';
@@ -96,7 +87,7 @@ function musclePanel(plan){
 }
 function radarChart(){
  const totals=Object.fromEntries(groups.map(k=>[k,0]));
- for(const plan of plans.slice(0,3)){const v=metrics(plan);for(const k of groups)totals[k]+=v[k]}
+ for(const plan of plans.filter(p=>p.type==='strength')){const v=metrics(plan);for(const k of groups)totals[k]+=v[k]}
  const width=350,center=175,radius=118,max=Math.max(...Object.values(totals),1);
  const svg=node('svg',{viewBox:'0 0 350 350',class:'radar',role:'img','aria-label':'Weekly training distribution radar chart'});
  const pt=(i,value)=>{const a=-Math.PI/2+2*Math.PI*i/groups.length;return [center+radius*value*Math.cos(a),center+radius*value*Math.sin(a)]};
