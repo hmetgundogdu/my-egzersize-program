@@ -68,7 +68,7 @@ function bodySvg(view,values,max){
 function metrics(plan){
  const v=Object.fromEntries(groups.map(k=>[k,0]));
  if(plan.type!=='strength')return v;
- for(const item of plan.items){
+ for(const item of config.sessions.find(session=>session.id===plan.id).items){
   const name=item.exercise;const sets=Number(item.sets)||0;for(const [k,w] of Object.entries(muscleWeights[name]||{}))v[k]+=sets*w;
  }
  return v;
