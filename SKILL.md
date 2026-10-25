@@ -1,17 +1,17 @@
 ---
 name: workout-template-installer
-description: Reuse this exact workout site's source files and visual design. Customize only workout-data.js to implement a user's selected routine; never recreate the UI from prose.
+description: Install, customize, and safely update the exact workout template from its official upstream repository. Keep the user's program intact and request explicit approval before any template update.
 ---
 
 # Workout Template Installer
 
 ## Absolute rule: REUSE, DO NOT REDESIGN
-This repository IS the template. To give another person the same site, **copy the complete repository** (or fork it), including `index.html`, `workout-data.js`, and `.github/workflows/pages.yml`. Then change the workout data only.
+This repository IS the template. To give another person the same site, **copy the complete repository** (or fork it), including `index.html`, `template-version.js`, `workout-data.js`, and `.github/workflows/pages.yml`. Then change the workout data only.
 
 Do NOT generate new HTML, new CSS, new muscle anatomy illustrations, new charts, a React application, different fonts, or alternative layouts. **Do not "implement the design" from this text.** The exact implementation is already included in the files. This is how the visual appearance remains as close as possible to the reference site.
 
 ## Steps for an agent
-1. Read `index.html`, `workout-data.js`, `README.md`, and `.github/workflows/pages.yml`.
+1. Read `index.html`, `template-version.js`, `workout-data.js`, `README.md`, and `.github/workflows/pages.yml`.
 2. Ask for a routine only when the person has not supplied one. If their routine is present, proceed without extra questions. Keep prescribed movements, frequency, sets and reps intact; don't invent a training program.
 3. Edit **only** `workout-data.js` (and optionally generic README text). Do not touch `index.html` or the SVG paths unless the user explicitly asks for a new feature or a genuine bug fix.
 4. Update `config.sessions`: stable unique `id`, user-facing `title`, `type` of `strength` or `recovery`, and `items` entries. Each strength exercise has `{id, exercise, sets, reps}`; recovery items use `{id, exercise, prescription}`.
@@ -19,7 +19,32 @@ Do NOT generate new HTML, new CSS, new muscle anatomy illustrations, new charts,
 6. Review the generated site, especially the muscle maps and weekly radar chart. If new muscles fall outside supported keys, don't silently pretend that they are represented. Request an explicit feature expansion or explain the limitation.
 7. Deploy the copied repository to its owner's GitHub Pages site using the already-provided workflow. Never publish to the original repository without authorization.
 
+## Template version and opt-in upstream updates
+
+**Official upstream source:** https://github.com/hmetgundogdu/my-workout-program  
+**Version source of truth:** `template-version.js`, which defines `window.WORKOUT_TEMPLATE_VERSION` as a semantic version string. The current initial versioned release is **v1.1.0**. Its label is shown beside WEEKLY ROUTINE. A user's exercise customization never increases the template version.
+
+### On installing the template
+- Clone/fork the complete repository and retain `template-version.js`.
+- Record the original upstream remote (`git remote add upstream https://github.com/hmetgundogdu/my-workout-program.git` when appropriate); a fork's `origin` is the user's repository.
+- Preserve the customized `workout-data.js` separately and keep local changes committed. Never push or open PRs on the upstream owner's repo as part of installing or updating a user's copy.
+
+### Check for updates when the user requests it or on a subsequent coding-agent maintenance session
+1. **Read the user's local `template-version.js`** and version displayed on the page.
+2. Fetch the latest `template-version.js` from the official upstream `main` (GitHub API or `git fetch upstream`); use GitHub file history, changelog/commits and a diff for changes since the user's previous upstream revision. Fetch only on request or while an agent is running, not silently from site visitors.
+3. If versions are equal, report that no newer template version is advertised. If upstream is newer, summarize concrete changes to the user: new features, bug fixes, any migrations, and which files would change. A version difference is an **availability signal**, not a guarantee of compatibility; review actual diffs. If versions are equal but upstream has new commits, report them as unreleased changes rather than an official new version.
+4. **ASK FOR EXPLICIT APPROVAL BEFORE applying any update, creating a commit, or deploying to the user's site.** Offer to skip or postpone. Never auto-merge on your own, even if a patch seems safe.
+5. After approval, **back up** `workout-data.js` and any user modifications; identify upstream changes against the user's copy. Apply or cherry-pick only template implementation files that the user approved. Use a three-way merge when possible and resolve conflicts consciously. **Never overwrite their customized `workout-data.js`** with the upstream example. Keep user-specific meta tags, links, Pages URLs and other customized settings; update upstream-owned files only after review.
+6. Run functional checks (all sessions, counts, SVGs, radar, checkmarks, mobile layout) and perform any necessary migrations. If updating checkbox keys, explicitly preserve/migrate existing localStorage or explain the reset risk before changing it.
+7. Update `template-version.js` only after the upstream code for that version is actually incorporated and verified. Show the new version label on screen. Commit/deploy only to the user's copy, then report its deployment status. If conflicts can't safely be resolved, stop and ask rather than discarding changes.
+
+**Important:** This skill instructs a coding agent to check and apply updates with approval. The browser page **does not autonomously poll upstream, message the user, download updates, or mutate the repository**. Someone must run their coding agent to carry out an update check.
+
+### Suggested update request
+"Check the official my-workout-program template for a newer version. Show me the differences and ask for my approval before applying anything. If I approve, update only the template implementation, preserve my workout-data.js and site settings, verify, then deploy my copy."
+
 ## What is already fully implemented
+- Version label next to the header, read from `template-version.js`
 - Complete minimal white CSS and responsive layout
 - Native click/tap-friendly checkboxes, browser-only localStorage and per-section reset
 - Grayscale thumbnails via **one source**, Free Exercise DB
