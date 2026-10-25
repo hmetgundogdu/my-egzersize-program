@@ -1,75 +1,34 @@
 <!doctype html>
 <html lang="tr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#ffffff">
-<meta name="description" content="Minimal günlük egzersiz planı ve ilerleme takipçisi.">
-<title>Egzersiz Planı</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#ffffff">
+<meta name="description" content="Sade egzersiz programı"><title>Egzersiz Programı</title>
 <style>
-:root{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#17191c;background:#fff;font-synthesis:none}
-*{box-sizing:border-box}body{margin:0;min-height:100vh}button{font:inherit;cursor:pointer}button:focus-visible,input:focus-visible{outline:2px solid #454b54;outline-offset:3px}
-.shell{max-width:1020px;margin:auto;padding:46px 30px 80px}.top{display:flex;justify-content:space-between;align-items:center;gap:20px;border-bottom:1px solid #e9eaed;padding-bottom:26px}.brand{font-size:15px;letter-spacing:-.02em;font-weight:750}.subbrand{font-size:12px;color:#92979e;margin-top:4px}.today-btn{background:white;border:1px solid #e1e3e7;padding:10px 15px;border-radius:10px;font-size:13px;color:#393d43}
-.hero{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin:42px 0 27px}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#92979e;font-weight:650}.hero h1{font-size:clamp(32px,5vw,49px);letter-spacing:-.055em;line-height:1.12;margin:10px 0 10px;font-weight:700}.subtitle{margin:0;color:#858a91;font-size:14px}.weekmove{display:flex;align-items:center;gap:9px}.nav{border:1px solid #e6e8ea;background:white;width:36px;height:36px;border-radius:10px;font-size:20px;color:#555}.week-range{min-width:105px;text-align:center;font-size:12px;color:#777d85;font-weight:600}
-.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:9px;margin:12px 0 30px}.day{border:1px solid #e9e9ec;background:#fff;text-align:left;border-radius:14px;padding:14px 12px;min-height:95px;display:flex;flex-direction:column;gap:11px;transition:border-color .15s,background .15s}.day:hover{border-color:#b7bbc2}.day.selected{border:1.5px solid #202327;background:#fafafa}.day .dow{font-size:12px;color:#838891}.day .daynum{font-size:22px;letter-spacing:-.04em;font-weight:650}.day .dayfoot{font-size:10px;color:#9da1a7;margin-top:auto}.day.selected .dayfoot{color:#393d43}.dot{display:inline-block;background:#1c242c;width:6px;height:6px;border-radius:100%;margin-left:5px;vertical-align:middle}
-.layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(245px,1fr);gap:22px}.panel{border:1px solid #e9e9ec;border-radius:18px;background:#fff;overflow:hidden}.panelhead{padding:25px 26px 19px;border-bottom:1px solid #eff0f2}.section-kicker{font-size:11px;font-weight:650;color:#9b9fa6;text-transform:uppercase;letter-spacing:.13em}.panel h2{font-size:25px;letter-spacing:-.04em;margin:9px 0 5px}.paneldesc{font-size:13px;color:#8b8f96;margin:0}.progress{display:flex;align-items:center;gap:13px;margin-top:19px}.track{height:5px;background:#f1f2f3;border-radius:6px;flex:1;overflow:hidden}.fill{background:#292e35;height:100%;width:0%;transition:width .2s}.ptext{font-size:12px;font-weight:650;color:#555e66;white-space:nowrap}
-.list{padding:7px 11px}.exercise{display:flex;align-items:center;gap:15px;min-height:78px;border-bottom:1px solid #f0f0f1;padding:15px}.exercise:last-child{border-bottom:0}.check{appearance:none;flex:none;width:25px;height:25px;border:1.5px solid #d6d9dd;border-radius:8px;background:white;position:relative;cursor:pointer}.check:checked{background:#23282e;border-color:#23282e}.check:checked:after{content:"";position:absolute;width:10px;height:6px;border-left:2px solid white;border-bottom:2px solid white;transform:rotate(-45deg);left:6px;top:6px}.exercise-name{flex:1;font-size:14px;font-weight:550}.exercise.done .exercise-name{color:#a6aab0;text-decoration:line-through;text-decoration-color:#cdd1d5}.reps{font-size:12px;color:#8b9097;white-space:nowrap;font-variant-numeric:tabular-nums}
-.side{padding:26px}.side h3{font-size:16px;letter-spacing:-.02em;margin:0 0 17px}.summary-row{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid #eff0f2;font-size:13px}.summary-row span:first-child{color:#888e95}.summary-row strong{font-weight:650}.notes{font-size:13px;line-height:1.9;color:#697079;margin-top:22px}.notes p{margin:0 0 12px}.muted-btn{margin-top:17px;padding:11px 0;border:0;background:transparent;color:#828791;font-size:12px;text-decoration:underline;text-underline-offset:3px}.foot{margin-top:35px;font-size:11px;color:#a2a6ad;display:flex;justify-content:space-between;gap:15px;line-height:1.5}.empty{padding:30px 17px;color:#92979e;font-size:14px}
-@media(max-width:760px){.shell{padding:25px 17px 60px}.hero{align-items:flex-start;flex-direction:column;margin-top:35px}.weekmove{align-self:flex-end}.week{gap:5px}.day{min-height:84px;padding:10px 6px;border-radius:11px;align-items:center;text-align:center;gap:9px}.day .dow{font-size:10px}.day .daynum{font-size:19px}.day .dayfoot{font-size:9px}.layout{grid-template-columns:1fr}.panelhead{padding:23px 19px 18px}.side{padding:22px}.exercise{gap:11px;padding:13px 8px;min-height:74px}.exercise-name{font-size:13px}.reps{font-size:11px}.foot{flex-direction:column}.subbrand{display:none}}
-@media(max-width:370px){.day .dayfoot{font-size:8px}.reps{font-size:10px}.week{gap:3px}}
+:root{color-scheme:light;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#202124;background:#fff}*{box-sizing:border-box}body{margin:0}.wrap{max-width:760px;margin:0 auto;padding:52px 24px 90px}.head{margin-bottom:40px}.eyebrow{font-size:11px;color:#92969b;letter-spacing:.15em;font-weight:700;text-transform:uppercase}h1{font-size:clamp(32px,6vw,45px);letter-spacing:-.06em;font-weight:710;margin:13px 0 9px}p{margin:0;color:#868a91;font-size:14px;line-height:1.65}.section{border-top:1px solid #e9eaeb;padding:24px 0 27px}.sectionhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}h2{font-size:20px;letter-spacing:-.035em;font-weight:650;margin:0}.sectionmeta{color:#9a9da3;font-size:12px}.task{display:flex;align-items:center;gap:14px;min-height:53px;cursor:pointer}.task input{appearance:none;width:22px;height:22px;flex:none;border-radius:7px;border:1.5px solid #d5d8dc;background:white;position:relative;cursor:pointer}.task input:checked{background:#24272b;border-color:#24272b}.task input:checked::after{content:"";position:absolute;left:6px;top:3px;width:6px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}.task input:focus-visible,.reset:focus-visible{outline:2px solid #444;outline-offset:3px}.name{flex:1;font-size:14px;font-weight:500}.reps{font-size:12px;color:#92969c;white-space:nowrap;font-variant-numeric:tabular-nums}.task:has(input:checked) .name{color:#a0a3a8;text-decoration:line-through;text-decoration-color:#c5c8ca}.reset{background:none;border:0;padding:9px 0;font-size:12px;text-decoration:underline;text-underline-offset:3px;color:#92969b;cursor:pointer}.bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:11px}.counter{font-size:12px;color:#989ba0}.hint{font-size:12px;color:#a0a3a7;margin-top:6px}footer{border-top:1px solid #e9eaeb;padding-top:20px;color:#a0a3a7;font-size:11px;line-height:1.7}.pill{font-size:11px;color:#777c83;background:#f4f5f6;border-radius:30px;padding:5px 9px}
+@media(max-width:520px){.wrap{padding:36px 19px 65px}.section{padding:23px 0}.task{gap:11px}.name{font-size:13px}.reps{font-size:11px}.sectionmeta{font-size:11px}}
 </style>
 </head>
-<body>
-<main class="shell">
- <header class="top"><div><div class="brand">Egzersiz Planı<span aria-hidden="true"> ↗</span></div><div class="subbrand">Sade. Düzenli. Sürdürülebilir.</div></div><button class="today-btn" id="todayBtn">Bugüne dön</button></header>
- <section class="hero"><div><div class="eyebrow" id="period">HAFTALIK TAKİP</div><h1>Her gün, bir adım.</h1><p class="subtitle">Planını takip et. Tamamladıklarını işaretle.</p></div><div class="weekmove"><button class="nav" id="prev" aria-label="Önceki hafta">‹</button><span class="week-range" id="range"></span><button class="nav" id="next" aria-label="Sonraki hafta">›</button></div></section>
- <nav class="week" id="week" aria-label="Haftanın günleri"></nav>
- <section class="layout"><article class="panel"><div class="panelhead"><div class="section-kicker" id="dayLabel">GÜNLÜK PLAN</div><h2 id="planTitle"></h2><p class="paneldesc" id="planSubtitle"></p><div class="progress"><div class="track" role="progressbar" aria-label="Günlük tamamlanma" aria-valuemin="0" aria-valuemax="100" id="progress"><div class="fill" id="bar"></div></div><span class="ptext" id="count">0 / 0</span></div></div><div class="list" id="tasks"></div></article>
- <aside class="panel side"><div class="section-kicker">GENEL BAKIŞ</div><h3>Bu haftan</h3><div class="summary-row"><span>Tamamlanan görev</span><strong id="weekDone">0 / 0</strong></div><div class="summary-row"><span>Tamamlanan gün</span><strong id="daysDone">0 / 7</strong></div><div class="summary-row"><span>Program</span><strong>3 antrenman + 4 hafif gün</strong></div><div class="notes"><p><strong>Set araları</strong> · 90–120 saniye</p><p><strong>Başlangıç</strong> · İlk iki hafta 2 set; ardından 3 set</p><p><strong>Teknik</strong> · Kontrollü tekrarlar, rahat nefes, ağrısız hareket aralığı</p><p><strong>Yük artışı</strong> · Tekrar aralığı rahat tamamlanınca küçük artışlar</p></div><button id="reset" class="muted-btn">Seçili günün işaretlerini temizle</button></aside></section>
- <footer class="foot"><span>İlerlemen yalnızca bu tarayıcıda saklanır.</span><span>Mobil ve masaüstü için tasarlandı.</span></footer>
+<body><main class="wrap">
+<header class="head"><div class="eyebrow">HAFTALIK RUTİN</div><h1>Egzersiz programım.</h1><p>3 antrenman · Aktif toparlanma · Sade bir rutin</p></header>
+<div id="program"></div>
+<footer>İşaretlemelerin yalnızca bu tarayıcıda saklanır. Her bölümün işaretlerini dilediğin zaman sıfırlayabilirsin.</footer>
 </main>
 <script>
-(function(){
-'use strict';
-const strength=(kind,items)=>({title:'Full Body '+kind,subtitle:'Ağırlık antrenmanı · 5–8 dk hafif ısınma',items});
+(()=>{
 const calf=['Calf Raise','3 × 15–25'],quad=['Leg Extension','3 × 12–15'],ham=['Seated Leg Curl','3 × 12–15'];
 const plans=[
-strength('A',[calf,['Machine Chest Press','3 × 10–15'],['Chest-Supported Row','3 × 10–15'],quad,ham,['Machine Lateral Raise','3 × 12–20']]),
-{title:'Aktif dinlenme',subtitle:'Rahat tempo · Dolaşım ve toparlanma',items:[['Yürüyüş','25–30 dk'],['Ayak bileği pompalama','2 × 20'],['Bacakları yükselterek dinlenme','10 dk']]},
-strength('B',[calf,['Neutral-Grip Lat Pulldown','3 × 10–15'],['Incline Machine Chest Press','3 × 10–15'],quad,ham,['Cable Biceps Curl','3 × 12–15']]),
-{title:'Hareketlilik',subtitle:'Hafif aktivite · Kontrollü hareket',items:[['Yürüyüş','20–30 dk'],['Ayak bileği pompalama','2 × 20'],['Hafif baldır esnetme','2 × 20 sn / taraf']]},
-strength('C',[calf,['Machine Chest Press','3 × 10–15'],['Chest-Supported Row','3 × 10–15'],quad,ham,['Cable Triceps Pushdown','3 × 12–15']]),
-{title:'Hafif kardiyo',subtitle:'Rahat tempo · Bir seçenek yeterli',items:[['Yürüyüş veya düşük dirençli bisiklet','25–35 dk / 20–25 dk'],['Ayak bileği pompalama','2 × 20']]},
-{title:'Toparlanma',subtitle:'Esnek gün · Gerektiği kadar dinlen',items:[['Hafif yürüyüş (isteğe bağlı)','10–20 dk'],['Rahat dinlenme','10–15 dk']]}
+{id:'a',title:'Antrenman A',meta:'6 hareket',items:[calf,['Machine Chest Press','3 × 10–15'],['Chest-Supported Row','3 × 10–15'],quad,ham,['Machine Lateral Raise','3 × 12–20']]},
+{id:'b',title:'Antrenman B',meta:'6 hareket',items:[calf,['Neutral-Grip Lat Pulldown','3 × 10–15'],['Incline Machine Chest Press','3 × 10–15'],quad,ham,['Cable Biceps Curl','3 × 12–15']]},
+{id:'c',title:'Antrenman C',meta:'6 hareket',items:[calf,['Machine Chest Press','3 × 10–15'],['Chest-Supported Row','3 × 10–15'],quad,ham,['Cable Triceps Pushdown','3 × 12–15']]},
+{id:'rest',title:'Aktif toparlanma',meta:'Antrenman dışı günler',items:[['Yürüyüş','20–30 dk'],['Ayak bileği pompalama','2 × 20'],['Hafif baldır esnetme','2 × 20 sn'],['Rahat dinlenme','10–15 dk']]}
 ];
-const names=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];const long=['Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi','Pazar'];const months=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
-const localDate=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate(),12);
-const addDays=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n,12);
-const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-const monday=d=>addDays(d,-((d.getDay()+6)%7));const ix=d=>(d.getDay()+6)%7;
-const safeRead=()=>{try{return JSON.parse(localStorage.getItem('exercise-checklist-v1')||'{}')}catch{return {}}};
-let saved=safeRead();if(!saved||typeof saved!=='object'||Array.isArray(saved))saved={};
-let selected=localDate(new Date());
-const el=id=>document.getElementById(id);
-function checked(d,i){return !!(saved[iso(d)]&&saved[iso(d)][i])}
-function stats(d){const p=plans[ix(d)].items;return [p.filter((_,i)=>checked(d,i)).length,p.length]}
-function save(){try{localStorage.setItem('exercise-checklist-v1',JSON.stringify(saved))}catch{}}
-function render(){
- const start=monday(selected),last=addDays(start,6);
- el('range').textContent=start.getMonth()===last.getMonth()?start.getDate()+'–'+last.getDate()+' '+months[last.getMonth()]:start.getDate()+' '+months[start.getMonth()].slice(0,3)+' – '+last.getDate()+' '+months[last.getMonth()].slice(0,3);
- el('period').textContent=selected.getFullYear()+' · HAFTALIK TAKİP';
- const week=el('week');week.replaceChildren();
- for(let i=0;i<7;i++){const d=addDays(start,i),s=stats(d),b=document.createElement('button');b.className='day'+(iso(d)===iso(selected)?' selected':'');b.type='button';b.setAttribute('aria-label',long[i]+' '+d.getDate()+' '+months[d.getMonth()]+', '+s[0]+'/'+s[1]+' tamamlandı');if(iso(d)===iso(selected))b.setAttribute('aria-current','date');const dayName=document.createElement('span');dayName.className='dow';dayName.textContent=names[i];const num=document.createElement('span');num.className='daynum';num.textContent=d.getDate();if(iso(d)===iso(localDate(new Date()))){const dot=document.createElement('span');dot.className='dot';dot.setAttribute('aria-label','Bugün');num.append(dot)}const foot=document.createElement('span');foot.className='dayfoot';foot.textContent=s[0]===s[1]?'Tamam':s[0]+'/'+s[1];b.append(dayName,num,foot);b.addEventListener('click',()=>{selected=d;render()});week.append(b)}
- const p=plans[ix(selected)],s=stats(selected);el('dayLabel').textContent=long[ix(selected)]+' · '+selected.getDate()+' '+months[selected.getMonth()];el('planTitle').textContent=p.title;el('planSubtitle').textContent=p.subtitle;
- el('count').textContent=s[0]+' / '+s[1];const percentage=Math.round(s[0]/s[1]*100);el('bar').style.width=percentage+'%';el('progress').setAttribute('aria-valuenow',percentage);
- const list=el('tasks');list.replaceChildren();p.items.forEach(([name,reps],i)=>{const label=document.createElement('label');label.className='exercise'+(checked(selected,i)?' done':'');const input=document.createElement('input');input.type='checkbox';input.className='check';input.checked=checked(selected,i);input.setAttribute('aria-label',name+' tamamlandı');input.addEventListener('change',()=>{const key=iso(selected);saved[key]??={};saved[key][i]=input.checked;save();render()});const title=document.createElement('span');title.className='exercise-name';title.textContent=name;const amount=document.createElement('span');amount.className='reps';amount.textContent=reps;label.append(input,title,amount);list.append(label)});
- let done=0,total=0,days=0;for(let i=0;i<7;i++){const t=stats(addDays(start,i));done+=t[0];total+=t[1];if(t[0]===t[1])days++}el('weekDone').textContent=done+' / '+total;el('daysDone').textContent=days+' / 7';
+const key='simple-workout-checks-v1';let state={};try{state=JSON.parse(localStorage.getItem(key)||'{}')||{}}catch{}const save=()=>{try{localStorage.setItem(key,JSON.stringify(state))}catch{}};
+const root=document.getElementById('program');
+for(const plan of plans){
+const section=document.createElement('section');section.className='section';const heading=document.createElement('div');heading.className='sectionhead';const title=document.createElement('h2');title.textContent=plan.title;const meta=document.createElement('span');meta.className='sectionmeta';meta.textContent=plan.meta;heading.append(title,meta);section.append(heading);
+let inputs=[];const count=document.createElement('span');count.className='counter';const update=()=>{const done=inputs.filter(x=>x.checked).length;count.textContent=done+' / '+inputs.length+' tamamlandı'};
+plan.items.forEach(([name,reps],i)=>{const label=document.createElement('label');label.className='task';const input=document.createElement('input');input.type='checkbox';input.checked=!!state[plan.id]?.[i];input.setAttribute('aria-label',name);inputs.push(input);input.addEventListener('change',()=>{state[plan.id]??={};state[plan.id][i]=input.checked;save();update()});const n=document.createElement('span');n.className='name';n.textContent=name;const r=document.createElement('span');r.className='reps';r.textContent=reps;label.append(input,n,r);section.append(label)});
+const bottom=document.createElement('div');bottom.className='bottom';const reset=document.createElement('button');reset.className='reset';reset.type='button';reset.textContent='İşaretleri temizle';reset.addEventListener('click',()=>{delete state[plan.id];inputs.forEach(x=>x.checked=false);save();update()});bottom.append(count,reset);section.append(bottom);root.append(section);update();
 }
-el('prev').addEventListener('click',()=>{selected=addDays(selected,-7);render()});
-el('next').addEventListener('click',()=>{selected=addDays(selected,7);render()});
-el('todayBtn').addEventListener('click',()=>{selected=localDate(new Date());render()});
-el('reset').addEventListener('click',()=>{delete saved[iso(selected)];save();render()});
-render();
 })();
-</script>
-</body></html>
+</script></body></html>
