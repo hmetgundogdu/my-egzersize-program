@@ -13,6 +13,8 @@ A ready-made, minimalist workout checklist site for desktop and mobile. It inclu
 
 The preview screenshots are generated from the actual site by [GitHub Actions](./.github/workflows/preview.yml) whenever the application changes.
 
+**Template version:** v1.1.0 (also visible in the page header)
+
 ## Create your own workout site
 
 **Do not ask an agent to recreate the site from scratch.** Fork or copy this repository. All UI styling, anatomy figures, checklist logic and charts are already implemented.
@@ -27,10 +29,23 @@ The preview screenshots are generated from the actual site by [GitHub Actions](.
 
 > Use this repository's SKILL.md and existing code as an exact template. Do not redesign the site. Customize only workout-data.js using my routine, including matched exercise illustrations and muscle coefficients. Validate the chart and publish my own copy on GitHub Pages.
 
+## Updating a copied template
+
+A coding agent can check the [original template repository](https://github.com/hmetgundogdu/my-workout-program) for updates, compare versions and changes, and **ask for your permission before applying them**. The update process must preserve your own `workout-data.js`, custom site URLs, and existing progress where possible.
+
+The version shown on the page comes from [template-version.js](./template-version.js), and tracks changes to the shared UI/features rather than your own workout program. It does not automatically update from the browser.
+
+**Ask your agent:**
+
+> Check my copy against the official my-workout-program template. Tell me what changed, then ask before applying an update. Preserve my workout-data.js, custom settings, and existing workout progress. Apply and deploy only after I approve.
+
+See [SKILL.md](./SKILL.md) for the detailed comparison, backup, approval and merge procedure.
+
 ## Repository files
 
 | File | Purpose |
 | --- | --- |
+| [template-version.js](./template-version.js) | Displayed template version, updated after an approved upstream release |
 | [index.html](./index.html) | **Fixed renderer:** minimalist styling, checkbox logic, SVG body maps, radar, thumbnail layout |
 | [workout-data.js](./workout-data.js) | **Editable routine:** sections, exercises, repetitions, image lookup and weighted-muscle estimates |
 | [SKILL.md](./SKILL.md) | Instructions for other coding agents to reuse the exact existing implementation |
