@@ -1,34 +1,34 @@
 <!doctype html>
-<html lang="tr">
+<html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#ffffff">
-<meta name="description" content="Sade egzersiz programı"><title>Egzersiz Programı</title>
+<meta name="description" content="Minimal workout routine"><title>Workout Plan</title>
 <style>
 :root{color-scheme:light;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#202124;background:#fff}*{box-sizing:border-box}body{margin:0}.wrap{max-width:760px;margin:0 auto;padding:52px 24px 90px}.head{margin-bottom:40px}.eyebrow{font-size:11px;color:#92969b;letter-spacing:.15em;font-weight:700;text-transform:uppercase}h1{font-size:clamp(32px,6vw,45px);letter-spacing:-.06em;font-weight:710;margin:13px 0 9px}p{margin:0;color:#868a91;font-size:14px;line-height:1.65}.section{border-top:1px solid #e9eaeb;padding:24px 0 27px}.sectionhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}h2{font-size:20px;letter-spacing:-.035em;font-weight:650;margin:0}.sectionmeta{color:#9a9da3;font-size:12px}.task{display:flex;align-items:center;gap:14px;min-height:53px;cursor:pointer}.task input{appearance:none;width:22px;height:22px;flex:none;border-radius:7px;border:1.5px solid #d5d8dc;background:white;position:relative;cursor:pointer}.task input:checked{background:#24272b;border-color:#24272b}.task input:checked::after{content:"";position:absolute;left:6px;top:3px;width:6px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}.task input:focus-visible,.reset:focus-visible{outline:2px solid #444;outline-offset:3px}.name{flex:1;font-size:14px;font-weight:500}.reps{font-size:12px;color:#92969c;white-space:nowrap;font-variant-numeric:tabular-nums}.task:has(input:checked) .name{color:#a0a3a8;text-decoration:line-through;text-decoration-color:#c5c8ca}.reset{background:none;border:0;padding:9px 0;font-size:12px;text-decoration:underline;text-underline-offset:3px;color:#92969b;cursor:pointer}.bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:11px}.counter{font-size:12px;color:#989ba0}.hint{font-size:12px;color:#a0a3a7;margin-top:6px}footer{border-top:1px solid #e9eaeb;padding-top:20px;color:#a0a3a7;font-size:11px;line-height:1.7}.pill{font-size:11px;color:#777c83;background:#f4f5f6;border-radius:30px;padding:5px 9px}
 @media(max-width:520px){.wrap{padding:36px 19px 65px}.section{padding:23px 0}.task{gap:11px}.name{font-size:13px}.reps{font-size:11px}.sectionmeta{font-size:11px}}
 </style>
 </head>
 <body><main class="wrap">
-<header class="head"><div class="eyebrow">HAFTALIK RUTİN</div><h1>Egzersiz programım.</h1><p>3 antrenman · Aktif toparlanma · Sade bir rutin</p></header>
+<header class="head"><div class="eyebrow">WEEKLY ROUTINE</div><h1>My workout plan.</h1><p>3 workouts · Active recovery · A simple routine</p></header>
 <div id="program"></div>
-<footer>İşaretlemelerin yalnızca bu tarayıcıda saklanır. Her bölümün işaretlerini dilediğin zaman sıfırlayabilirsin.</footer>
+<footer>Your checkmarks are saved only in this browser. You can reset each section at any time.</footer>
 </main>
 <script>
 (()=>{
 const calf=['Calf Raise','3 × 15–25'],quad=['Leg Extension','3 × 12–15'],ham=['Seated Leg Curl','3 × 12–15'];
 const plans=[
-{id:'a',title:'Antrenman A',meta:'6 hareket',items:[calf,['Machine Chest Press','3 × 10–15'],['Chest-Supported Row','3 × 10–15'],quad,ham,['Machine Lateral Raise','3 × 12–20']]},
-{id:'b',title:'Antrenman B',meta:'6 hareket',items:[calf,['Neutral-Grip Lat Pulldown','3 × 10–15'],['Incline Machine Chest Press','3 × 10–15'],quad,ham,['Cable Biceps Curl','3 × 12–15']]},
-{id:'c',title:'Antrenman C',meta:'6 hareket',items:[calf,['Machine Chest Press','3 × 10–15'],['Chest-Supported Row','3 × 10–15'],quad,ham,['Cable Triceps Pushdown','3 × 12–15']]},
-{id:'rest',title:'Aktif toparlanma',meta:'Antrenman dışı günler',items:[['Yürüyüş','20–30 dk'],['Ayak bileği pompalama','2 × 20'],['Hafif baldır esnetme','2 × 20 sn'],['Rahat dinlenme','10–15 dk']]}
+{id:'a',title:'Workout A',meta:'6 exercises',items:[calf,['Machine Chest Press','3 × 10–15'],['Chest-Supported Row','3 × 10–15'],quad,ham,['Machine Lateral Raise','3 × 12–20']]},
+{id:'b',title:'Workout B',meta:'6 exercises',items:[calf,['Neutral-Grip Lat Pulldown','3 × 10–15'],['Incline Machine Chest Press','3 × 10–15'],quad,ham,['Cable Biceps Curl','3 × 12–15']]},
+{id:'c',title:'Workout C',meta:'6 exercises',items:[calf,['Machine Chest Press','3 × 10–15'],['Chest-Supported Row','3 × 10–15'],quad,ham,['Cable Triceps Pushdown','3 × 12–15']]},
+{id:'rest',title:'Active Recovery',meta:'Non-training days',items:[['Walking','20–30 min'],['Ankle Pumps','2 × 20'],['Gentle Calf Stretch','2 × 20 sec'],['Relax and Recover','10–15 min']]}
 ];
 const key='simple-workout-checks-v1';let state={};try{state=JSON.parse(localStorage.getItem(key)||'{}')||{}}catch{}const save=()=>{try{localStorage.setItem(key,JSON.stringify(state))}catch{}};
 const root=document.getElementById('program');
 for(const plan of plans){
 const section=document.createElement('section');section.className='section';const heading=document.createElement('div');heading.className='sectionhead';const title=document.createElement('h2');title.textContent=plan.title;const meta=document.createElement('span');meta.className='sectionmeta';meta.textContent=plan.meta;heading.append(title,meta);section.append(heading);
-let inputs=[];const count=document.createElement('span');count.className='counter';const update=()=>{const done=inputs.filter(x=>x.checked).length;count.textContent=done+' / '+inputs.length+' tamamlandı'};
+let inputs=[];const count=document.createElement('span');count.className='counter';const update=()=>{const done=inputs.filter(x=>x.checked).length;count.textContent=done+' / '+inputs.length+' completed'};
 plan.items.forEach(([name,reps],i)=>{const label=document.createElement('label');label.className='task';const input=document.createElement('input');input.type='checkbox';input.checked=!!state[plan.id]?.[i];input.setAttribute('aria-label',name);inputs.push(input);input.addEventListener('change',()=>{state[plan.id]??={};state[plan.id][i]=input.checked;save();update()});const n=document.createElement('span');n.className='name';n.textContent=name;const r=document.createElement('span');r.className='reps';r.textContent=reps;label.append(input,n,r);section.append(label)});
-const bottom=document.createElement('div');bottom.className='bottom';const reset=document.createElement('button');reset.className='reset';reset.type='button';reset.textContent='İşaretleri temizle';reset.addEventListener('click',()=>{delete state[plan.id];inputs.forEach(x=>x.checked=false);save();update()});bottom.append(count,reset);section.append(bottom);root.append(section);update();
+const bottom=document.createElement('div');bottom.className='bottom';const reset=document.createElement('button');reset.className='reset';reset.type='button';reset.textContent='Clear checks';reset.addEventListener('click',()=>{delete state[plan.id];inputs.forEach(x=>x.checked=false);save();update()});bottom.append(count,reset);section.append(bottom);root.append(section);update();
 }
 })();
 </script></body></html>
