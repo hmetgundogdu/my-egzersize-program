@@ -13,7 +13,19 @@ A ready-made, minimalist workout checklist site for desktop and mobile. It inclu
 
 The preview screenshots are generated from the actual site by [GitHub Actions](./.github/workflows/preview.yml) whenever the application changes.
 
-**Template version:** v1.1.0 (also visible in the page header)
+**Template version:** v1.2.0 (also visible in the page header)
+
+## Install as an app (PWA)
+
+The website supports installation as a Progressive Web App (PWA), including a standalone home-screen icon, manifest, and offline caching of the core interface and workout program. Progress stays in browser-local storage on that installation.
+
+- **Android / supported desktop browsers:** open the live site and select **Install app** when offered, or use the browser's installation menu.
+- **iPhone / iPad:** open the site in Safari, then use **Share → Add to Home Screen** (installation prompt support differs by browser).
+- The exercise thumbnails are hosted by Free Exercise DB; they are not included in the offline app shell and may not appear without a connection.
+- Workouts remain locally stored; they are not synced between the browser tab and an installed-app storage context, or across devices.
+- Updates to the template's application files are fetched by the service worker on subsequent visits. The **coding-agent upstream update workflow** is separate and still requires user approval before modifying anyone's fork.
+
+PWA sources: [manifest](./manifest.webmanifest), [service worker](./sw.js), [app icon](./assets/app-icon.svg) and [icon generation workflow](./.github/workflows/pwa-icons.yml).
 
 ## Create your own workout site
 
@@ -45,6 +57,8 @@ See [SKILL.md](./SKILL.md) for the detailed comparison, backup, approval and mer
 
 | File | Purpose |
 | --- | --- |
+| [manifest.webmanifest](./manifest.webmanifest) | Install name, scope, display mode and icon references |
+| [sw.js](./sw.js) | Offline app-shell cache scoped to this installation |
 | [template-version.js](./template-version.js) | Displayed template version, updated after an approved upstream release |
 | [index.html](./index.html) | **Fixed renderer:** minimalist styling, checkbox logic, SVG body maps, radar, thumbnail layout |
 | [workout-data.js](./workout-data.js) | **Editable routine:** sections, exercises, repetitions, image lookup and weighted-muscle estimates |
