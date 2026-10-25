@@ -22,42 +22,74 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Install browser
+      - name: Install Chromium and Pillow
         run: |
           npm install --no-save playwright
           npx playwright install --with-deps chromium
-      - name: Capture real website
+          python3 -m pip install --user Pillow
+      - name: Capture actual website
         run: |
           mkdir -p assets
           python3 -m http.server 8765 >/tmp/workout-server.log 2>&1 &
           node <<'NODE'
-          const { chromium } = require('playwright');
+          const {chromium} = require('playwright');
           (async () => {
-            const browser = await chromium.launch({headless: true});
-            const page = await browser.newPage({viewport:{width:1200,height:630},deviceScaleFactor:1});
+            const browser = await chromium.launch({headless:true});
+            const page = await browser.newPage({viewport:{width:1200,height:900},deviceScaleFactor:1});
             await page.goto('http://127.0.0.1:8765/',{waitUntil:'networkidle'});
-            await page.locator('.section').first().waitFor();
             await page.locator('.body-map').first().waitFor();
             await page.locator('.radar').first().waitFor();
             await page.evaluate(async () => {
-              await Promise.all([...document.images].map(img =>
-                img.decode().catch(() => {})));
+              await Promise.all([...document.images].map(i=>i.decode().catch(()=>{})));
             });
-            await page.screenshot({path:'assets/social-preview.png',animations:'disabled'});
-            await page.setViewportSize({width:1200,height:900});
-            await page.screenshot({path:'assets/screenshot.png',fullPage:true,animations:'disabled'});
+            await page.screenshot({path:'assets/fullpage-source.png',fullPage:true,animations:'disabled'});
             await browser.close();
-          })().catch(error => {console.error(error);process.exit(1)});
+          })().catch(error=>{console.error(error);process.exit(1)});
           NODE
-      - name: Commit preview assets
+      - name: Build diagonal dual-screenshot collage
+        run: |
+          python3 <<'PY'
+          from PIL import Image, ImageDraw, ImageFilter
+          import math
+
+          source = Image.open("assets/fullpage-source.png").convert("RGB")
+          width, height = source.size
+          quarter = max(1, height // 4)
+          top = source.crop((0, 0, width, quarter))
+          bottom = source.crop((0, height - quarter, width, height))
+
+          def card(slice_image, w):
+              # Retain the exact captured content; scale proportionally with no crop.
+              h = round(slice_image.height * (w / slice_image.width))
+              im = slice_image.resize((w, h), Image.Resampling.LANCZOS)
+              padding = 18
+              art = Image.new("RGBA", (w + padding*2, h + padding*2), (0,0,0,0))
+              shadow = Image.new("RGBA", art.size, (0,0,0,0))
+              ImageDraw.Draw(shadow).rounded_rectangle((padding, padding, padding+w, padding+h), radius=12, fill=(15,24,35,75))
+              shadow = shadow.filter(ImageFilter.GaussianBlur(13))
+              art.alpha_composite(shadow, (0,7))
+              art.alpha_composite(im.convert("RGBA"),(padding,padding))
+              return art
+
+          canvas = Image.new("RGBA", (1200, 630), "#f5f5f5")
+          # Back: final quarter with radar; front: first quarter with workout header.
+          rear = card(bottom, 785).rotate(7, Image.Resampling.BICUBIC, expand=True)
+          front = card(top, 835).rotate(-5, Image.Resampling.BICUBIC, expand=True)
+          canvas.alpha_composite(rear, (320, 122))
+          canvas.alpha_composite(front, (70, 17))
+          canvas.convert("RGB").save("assets/social-preview.png", format="PNG", optimize=True)
+          canvas.convert("RGB").save("assets/screenshot.png", format="PNG", optimize=True)
+          PY
+          rm assets/fullpage-source.png
+      - name: Commit screenshots
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add assets/screenshot.png assets/social-preview.png
           if git diff --cached --quiet; then
-            echo "Preview already up to date"
+            echo "Screenshots are up to date"
           else
-            git commit -m "Update website preview screenshots"
+            git commit -m "Refresh layered workout previews"
             git pull --rebase origin main
             git push origin main
           fi
